@@ -1,6 +1,6 @@
-# [Project name]
+# BIAGIO TRAIL
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A mobile-first hiking companion for discovering, saving, and planning Italian trekking routes.
 
 ## Run & Operate
 
@@ -22,23 +22,30 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/biagio-trail/src/App.tsx` — route shell and app entry
+- `artifacts/biagio-trail/src/data/trails.ts` — local trail catalog and app settings types
+- `artifacts/biagio-trail/src/components/` — responsive shell and reusable trail UI
+- `artifacts/biagio-trail/src/pages/` — welcome, trail list, detail, favorites, and settings screens
+- `artifacts/biagio-trail/src/index.css` — shared outdoor theme tokens and responsive styles
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The first release is frontend-only so trail discovery and saved-route interactions are immediately usable without account setup.
+- Favorites and settings persist in local storage to keep the mobile experience useful across reloads.
+- The responsive shell uses bottom navigation on phones and a navigation rail on wider screens.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+BIAGIO TRAIL helps people explore scenic trails across Italy, compare routes by difficulty and distance, read route notes, save favorites, and configure practical preferences such as units, notifications, and offline route notes.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Mobile-first responsive design
+- Modern green and blue outdoor theme
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- The Vite workflow supplies `PORT` and `BASE_PATH`; run the artifact workflow rather than starting Vite from the workspace root.
 
 ## Pointers
 

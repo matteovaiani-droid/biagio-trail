@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "BIAGIO TRAIL"
+description = "A mobile-first hiking and trekking companion for discovering scenic trails across Italy, saving favorites, and planning the next outdoor adventure."
+version = "1.0.0"
+id = "artifacts/biagio-trail"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21906
+
+[services.development]
+run = "pnpm --filter @workspace/biagio-trail run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/biagio-trail", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/biagio-trail/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21906"
+BASE_PATH = "/"
