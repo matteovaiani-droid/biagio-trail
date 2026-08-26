@@ -17,16 +17,20 @@ function difficultyClass(difficulty: Trail['difficulty']) {
   return difficulty.toLowerCase();
 }
 
+function difficultyLabel(difficulty: Trail['difficulty']) {
+  return { Easy: 'Facile', Moderate: 'Moderato', Demanding: 'Impegnativo' }[difficulty];
+}
+
 export function TrailCard({ trail, isFavorite, onToggleFavorite, unit }: TrailCardProps) {
   return (
     <article className="trail-card stagger-item" data-testid={`card-trail-${trail.id}`}>
-      <Link href={`/trails/${trail.id}`} className="trail-card-image" style={{ backgroundImage: `url("${trail.image}")` }} data-testid={`link-trail-${trail.id}`} aria-label={`View ${trail.name}`} />
+      <Link href={`/trails/${trail.id}`} className="trail-card-image" style={{ backgroundImage: `url("${trail.image}")` }} data-testid={`link-trail-${trail.id}`} aria-label={`Vedi ${trail.name}`} />
       <div className="trail-card-body">
         <div className="trail-card-region">{trail.region} · {trail.province}</div>
         <Link href={`/trails/${trail.id}`} style={{ color: 'inherit', textDecoration: 'none' }} data-testid={`link-trail-name-${trail.id}`}>
           <h3 className="trail-card-name">{trail.name}</h3>
         </Link>
-        <span className={`difficulty ${difficultyClass(trail.difficulty)}`}>{trail.difficulty}</span>
+        <span className={`difficulty ${difficultyClass(trail.difficulty)}`}>{difficultyLabel(trail.difficulty)}</span>
         <div className="trail-card-stats">
           <span><TrendingUp size={12} />{trail.elevationM} m</span>
           <span><Mountain size={12} />{distanceLabel(trail.distanceKm, unit)}</span>
@@ -37,7 +41,7 @@ export function TrailCard({ trail, isFavorite, onToggleFavorite, unit }: TrailCa
       <button
         className={`favorite-button ${isFavorite ? 'active favorite-pop' : ''}`}
         type="button"
-        aria-label={isFavorite ? `Remove ${trail.name} from saved trails` : `Save ${trail.name}`}
+        aria-label={isFavorite ? `Rimuovi ${trail.name} dai sentieri salvati` : `Salva ${trail.name}`}
         onClick={() => onToggleFavorite(trail.id)}
         data-testid={`button-favorite-${trail.id}`}
       >

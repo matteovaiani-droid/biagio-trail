@@ -10,6 +10,7 @@ type TrailsPageProps = {
 };
 
 const filters: Array<'All' | Difficulty> = ['All', 'Easy', 'Moderate', 'Demanding'];
+const filterLabels: Record<'All' | Difficulty, string> = { All: 'Tutti', Easy: 'Facili', Moderate: 'Moderati', Demanding: 'Impegnativi' };
 
 export function TrailsPage({ favorites, onToggleFavorite, unit }: TrailsPageProps) {
   const [search, setSearch] = useState('');
@@ -23,21 +24,21 @@ export function TrailsPage({ favorites, onToggleFavorite, unit }: TrailsPageProp
   return (
     <div data-testid="page-trails">
       <header className="page-header">
-        <div className="eyebrow">The trail index</div>
-        <h1 className="page-title">Pick a path.</h1>
-        <p className="page-description">Six routes worth the early alarm, from gentle meadow loops to full Apennine days.</p>
+        <div className="eyebrow">L’indice dei sentieri</div>
+        <h1 className="page-title">Scegli il tuo percorso.</h1>
+        <p className="page-description">Sei itinerari che valgono una sveglia all’alba, dai dolci anelli nei prati alle giornate intere sugli Appennini.</p>
       </header>
       <div className="search-box">
         <Search size={16} />
-        <input className="search-input" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by trail, region, or province" data-testid="input-search-trails" />
+        <input className="search-input" type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cerca per sentiero, regione o provincia" data-testid="input-search-trails" />
       </div>
-      <div className="filter-row" aria-label="Filter by difficulty">
+        <div className="filter-row" aria-label="Filtra per difficoltà">
         <SlidersHorizontal size={15} style={{ flex: '0 0 auto', margin: '.48rem .18rem 0 0', color: 'hsl(var(--muted-foreground))' }} />
         {filters.map((filter) => (
-          <button className={`filter-chip ${difficulty === filter ? 'active' : ''}`} type="button" key={filter} onClick={() => setDifficulty(filter)} data-testid={`button-filter-${filter.toLowerCase()}`}>{filter}</button>
+          <button className={`filter-chip ${difficulty === filter ? 'active' : ''}`} type="button" key={filter} onClick={() => setDifficulty(filter)} data-testid={`button-filter-${filter.toLowerCase()}`}>{filterLabels[filter]}</button>
         ))}
       </div>
-      <div className="results-line" data-testid="text-results-count">{filtered.length} {filtered.length === 1 ? 'trail' : 'trails'} in your field guide</div>
+      <div className="results-line" data-testid="text-results-count">{filtered.length} {filtered.length === 1 ? 'sentiero' : 'sentieri'} nella tua guida</div>
       {filtered.length ? (
         <div className="trail-grid">
           {filtered.map((trail) => <TrailCard key={trail.id} trail={trail} isFavorite={favorites.includes(trail.id)} onToggleFavorite={onToggleFavorite} unit={unit} />)}
@@ -45,9 +46,9 @@ export function TrailsPage({ favorites, onToggleFavorite, unit }: TrailsPageProp
       ) : (
         <div className="empty-state" data-testid="empty-trails">
           <div className="empty-icon"><Search size={21} /></div>
-          <h2>No path by that name</h2>
-          <p>Try a region, a province, or clear the filters and let the mountains surprise you.</p>
-          <button className="action-button" type="button" onClick={() => { setSearch(''); setDifficulty('All'); }} data-testid="button-clear-trail-filters">Clear filters</button>
+          <h2>Nessun sentiero trovato</h2>
+          <p>Prova una regione, una provincia oppure azzera i filtri e lascia che siano le montagne a sorprenderti.</p>
+          <button className="action-button" type="button" onClick={() => { setSearch(''); setDifficulty('All'); }} data-testid="button-clear-trail-filters">Azzera i filtri</button>
         </div>
       )}
     </div>

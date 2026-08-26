@@ -3,10 +3,10 @@ import { useLocation, Link } from 'wouter';
 import { Compass, Heart, Home, Map, Settings2, Sunrise, CloudSun } from 'lucide-react';
 
 const navItems = [
-  { href: '/', label: 'Discover', icon: Home },
-  { href: '/trails', label: 'Trails', icon: Map },
-  { href: '/favorites', label: 'Saved', icon: Heart },
-  { href: '/settings', label: 'Settings', icon: Settings2 },
+  { href: '/', label: 'Scopri', icon: Home },
+  { href: '/trails', label: 'Sentieri', icon: Map },
+  { href: '/favorites', label: 'Salvati', icon: Heart },
+  { href: '/settings', label: 'Impostazioni', icon: Settings2 },
 ];
 
 export function Brand() {
@@ -21,7 +21,7 @@ export function Brand() {
 function Navigation({ rail = false }: { rail?: boolean }) {
   const [location] = useLocation();
   return (
-    <nav className={rail ? 'rail-nav' : 'bottom-nav'} aria-label="Main navigation">
+    <nav className={rail ? 'rail-nav' : 'bottom-nav'} aria-label="Navigazione principale">
       {navItems.map(({ href, label, icon: Icon }) => {
         const active = href === '/' ? location === '/' : location.startsWith(href);
         return (
@@ -45,18 +45,18 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="app-shell">
       <aside className="desktop-rail">
         <Brand />
-        <div className="rail-label">Your field guide</div>
+        <div className="rail-label">La tua guida sul campo</div>
         <Navigation rail />
         <div className="rail-bottom">
           <Sunrise size={17} />
-          <p style={{ marginTop: '.55rem' }}>Clear mornings make good stories. Check your route, then take the long way.</p>
+          <p style={{ marginTop: '.55rem' }}>Le mattine limpide regalano storie bellissime. Controlla il percorso, poi scegli la strada più lunga.</p>
         </div>
       </aside>
       <header className="mobile-topbar">
         <Brand />
         <div className="weather-pill" data-testid="status-weather">
           <CloudSun size={14} />
-          <span>18° · clear</span>
+          <span>18° · sereno</span>
         </div>
       </header>
       <main className="main-area">
