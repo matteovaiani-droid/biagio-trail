@@ -1,70 +1,285 @@
-import { useState } from 'react';
-import { ArrowLeft, Check, Heart, MapPin, Navigation, Star } from 'lucide-react';
-import { Link, useParams } from 'wouter';
-import { trails } from '@/data/trails';
-import { distanceLabel } from '@/components/TrailCard';
+import { useEffect, useState } from "react";
+import { useParams } from "wouter";
+
+import { distanceLabel } from "@/components/TrailCard";
+import { getTrails } from "@/services/trailsService";
+import {  getWeather,  getWeatherDescription,} from "@/services/weatherService";
+import {  MapContainer,  TileLayer,  Marker,  Popup,} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet/dist/leaflet.css";
+
 
 type TrailDetailPageProps = {
   favorites: string[];
   onToggleFavorite: (id: string) => void;
-  unit: 'km' | 'mi';
+  unit: "km" | "mi";
+
 };
 
-export function TrailDetailPage({ favorites, onToggleFavorite, unit }: TrailDetailPageProps) {
+export function TrailDetailPage({
+  favorites,
+  onToggleFavorite,
+  unit,
+}: TrailDetailPageProps) {
   const params = useParams<{ id: string }>();
-  const trail = trails.find((item) => item.id === params.id);
-  const [planned, setPlanned] = useState(false);
-  if (!trail) {
-    return <div className="empty-state"><div className="empty-icon"><MapPin size={21} /></div><h2>Questo sentiero si è perso</h2><p>Non riusciamo a trovare questo percorso nella guida sul campo.</p><Link href="/trails" className="action-button">Torna ai sentieri</Link></div>;
+
+  const [trail, setTrail] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [weather, setWeather] =
+    useState<any>(null);
+
+  useEffect(() => {
+    getTrails()
+      .then((data: any) => {
+        const found = (data ?? []).find(
+          (item: any) => item.id === params.id
+        );
+
+        if (!found) {
+          setTrail(null);
+          return;
+        }
+
+        setTrail({
+          ...found,
+          distanceKm: found.distance_km,
+          elevationM: found.elevation_m,
+          startPoint: found.start_point,
+          reviewCount: found.review_count,
+        });
+        if (found.coordinates) {
+          getWeather(found.coordinates)
+            .then(setWeather)
+            .catch(console.error);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div style={{ padding: "20px" }}>
+        Caricamento...
+      </div>
+    );
   }
-  const isFavorite = favorites.includes(trail.id);
-  return (
-    <div data-testid={`page-trail-detail-${trail.id}`}>
-      <div className="detail-hero-outer">
-        <section className="trail-detail-hero" style={{ backgroundImage: `url("${trail.image}")` }}>
-          <Link href="/trails" className="detail-back" data-testid="link-back-trails"><ArrowLeft size={14} /> Tutti i sentieri</Link>
-          <div className="detail-favorite">
-            <button className={`favorite-button ${isFavorite ? 'active favorite-pop' : ''}`} type="button" onClick={() => onToggleFavorite(trail.id)} aria-label={isFavorite ? 'Rimuovi dai sentieri salvati' : 'Salva sentiero'} data-testid="button-detail-favorite">
-              <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
-            </button>
-          </div>
-          <div className="detail-hero-content">
-            <div className="eyebrow" style={{ color: 'hsl(45 90% 67%)' }}>{trail.region} · {trail.province}</div>
-            <h1>{trail.name}</h1>
-            <p><Star size={12} fill="currentColor" style={{ verticalAlign: 'middle', marginRight: '.25rem', color: 'hsl(45 90% 67%)' }} /> {trail.rating} da {trail.reviewCount} recensioni</p>
-          </div>
-        </section>
+
+  if (!trail) {
+    return (
+      <div style={{ padding: "20px" }}>
+        <h2>Sentiero non trovato</h2>
       </div>
-      <div className="detail-content">
-        <div className="stat-row">
-          <div className="stat-tile"><div className="stat-tile-label">Distanza</div><div className="stat-tile-value">{distanceLabel(trail.distanceKm, unit)}</div></div>
-          <div className="stat-tile"><div className="stat-tile-label">Dislivello</div><div className="stat-tile-value">{trail.elevationM} m</div></div>
-          <div className="stat-tile"><div className="stat-tile-label">Durata</div><div className="stat-tile-value">{trail.duration}</div></div>
-          <div className="stat-tile"><div className="stat-tile-label">Impegno</div><div className="stat-tile-value">{{ Easy: 'Facile', Moderate: 'Moderato', Demanding: 'Impegnativo' }[trail.difficulty]}</div></div>
-        </div>
-        <section className="detail-panel">
-          <div className="eyebrow">Nota del percorso</div>
-          <h2>Vai incontro al panorama.</h2>
-          <p>{trail.description}</p>
-          <ul className="highlight-list">{trail.highlights.map((highlight) => <li key={highlight}><Check size={15} strokeWidth={2.5} />{highlight}</li>)}</ul>
-        </section>
-        <section className="detail-panel map-panel">
-          <div className="map-label">Orientamento del percorso</div>
-          <div className="route-line" />
-          <div className="map-pin start" />
-          <div className="map-pin end" />
-          <div style={{ position: 'absolute', bottom: '.8rem', left: '.9rem', color: 'hsl(var(--muted-foreground))', fontFamily: 'var(--app-font-mono)', fontSize: '.61rem' }}>{trail.coordinates}</div>
-        </section>
-        <section className="detail-panel">
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', alignItems: 'center' }}>
-            <div><div className="eyebrow">Prima di partire</div><h2>Fai un piccolo piano.</h2></div>
-            <Navigation size={20} color="hsl(var(--primary))" />
-          </div>
-          <p>Salva questo percorso, controlla le previsioni locali e scarica le note se resterai senza segnale.</p>
-          <button className="action-button full" type="button" onClick={() => setPlanned(true)} data-testid="button-plan-trail">{planned ? <><Check size={15} /> Percorso pronto</> : <>Segna percorso come pronto <ArrowLeft size={15} style={{ transform: 'rotate(180deg)' }} /></>}</button>
-          {planned && <div className="planning-note" data-testid="status-route-planned">Ottima scelta. Il percorso è pronto nel tuo taccuino.</div>}
-        </section>
-      </div>
-    </div>
+    );
+  }
+
+  const isFavorite = favorites.includes(
+    trail.id
   );
-}
+
+  const latitude = Number(
+    trail.latitude
+  );
+
+  const longitude = Number(
+    trail.longitude
+  );
+  const position: [number, number] = [
+    latitude,
+    longitude,
+  ];
+  const difficultyLabel = (
+    difficulty: string
+  ) => {
+    switch (difficulty?.toLowerCase()) {
+      case "easy":
+        return "🟢 Facile";
+
+      case "medium":
+        return "🟠 Media";
+
+      case "hard":
+        return "🔴 Difficile";
+
+      case "expert":
+        return "⚫ Esperto";
+
+      default:
+        return difficulty;
+    }
+  };
+  return (
+    <div
+      style={{
+        padding: "20px",
+      }}
+    >
+      <h1>{trail.name}</h1>
+
+      <p>
+        {trail.region} - {trail.province}
+      </p>
+
+      <hr />
+
+      <p>
+        📏 Distanza:{" "}
+        {distanceLabel(
+          trail.distanceKm,
+          unit
+        )}
+      </p>
+
+      <p>
+        ⛰️ Dislivello: {trail.elevationM} m
+      </p>
+      {trail.difficulty && (
+        <div
+          style={{
+            display: "inline-block",
+            padding: "6px 12px",
+            borderRadius: "999px",
+            backgroundColor:
+              trail.difficulty === "easy"
+                ? "#dcfce7"
+                : trail.difficulty === "medium"
+                ? "#fef3c7"
+                : "#fee2e2",
+            marginBottom: "12px",
+            fontWeight: "bold",
+          }}
+        >
+          🥾 {difficultyLabel(trail.difficulty)}
+        </div>
+      )}
+      
+      <p>
+        ⏱️ Durata: {trail.duration}
+      </p>
+
+      <p>
+        ⭐ Rating: {trail.rating}
+      </p>
+
+      {trail.coordinates && (
+        <p>
+          📍 Coordinate:{" "}
+          {trail.coordinates}
+        </p>
+      )}
+
+      {weather?.current && (
+        <div>
+          <p>
+            {getWeatherDescription(
+              weather.current.weather_code
+            )}
+          </p>
+
+          <p>
+            🌡️ Temperatura:{" "}
+            {weather.current.temperature_2m}°C
+          </p>
+
+          <p>
+            💨 Vento:{" "}
+            {weather.current.wind_speed_10m} km/h
+          </p>
+        </div>
+      )}
+
+      {trail.startPoint && (
+        <p>
+          🚩 Partenza:{" "}
+          {trail.startPoint}
+        </p>
+      )}
+
+{trail.latitude && trail.longitude && (
+  <>
+    <h3>🗺️ Posizione</h3>
+
+    <div
+      style={{
+        height: "400px",
+        marginBottom: "20px",
+        borderRadius: "12px",
+        overflow: "hidden",
+      }}
+    >
+      <a
+        href={`https://www.google.com/maps?q=${latitude},${longitude}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "inline-block",
+          marginBottom: "20px",
+          padding: "10px 16px",
+          backgroundColor: "#2563eb",
+          color: "white",
+          textDecoration: "none",
+          borderRadius: "8px",
+          fontWeight: "bold",
+        }}
+      >
+        
+        <a
+          href={`https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block",
+            marginLeft: "10px",
+            marginBottom: "20px",
+          }}
+        >
+          🗺️ Apri in OpenStreetMap
+        </a>
+        📍 Apri in Google Maps
+      </a>
+      <MapContainer
+        center={[latitude, longitude]}
+        zoom={13}
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        <Marker
+          position={[latitude, longitude]}
+        >
+          <Popup>
+            {trail.name}
+          </Popup>
+        </Marker>
+      </MapContainer>
+    </div>
+  </>
+)}
+      {trail.description && (
+        <>
+          <h3>Descrizione</h3>
+          <p>{trail.description}</p>
+        </>
+      )}
+
+            <button
+              onClick={() =>
+                onToggleFavorite(trail.id)
+              }
+            >
+              {isFavorite
+                ? "★ Preferito"
+                : "☆ Salva"}
+            </button>
+            </div>
+            );
+            }

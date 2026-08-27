@@ -12,9 +12,12 @@ export type Trail = {
   rating: number;
   reviewCount: number;
   description: string;
-  image: string;
+  image?: string;
+  image_url?: string;
   highlights: string[];
   coordinates: string;
+  weather?: string;
+  startPoint?: string;
 };
 
 export const trails: Trail[] = [
@@ -29,11 +32,20 @@ export const trails: Trail[] = [
     difficulty: 'Moderate',
     rating: 4.9,
     reviewCount: 328,
-    description: 'Un balcone sulla Costiera Amalfitana, tra terrazzamenti di limoni e cornici calcaree da Bomerano a Nocelle. Parti presto per goderti il Tirreno nella sua luce migliore.',
-    image: 'https://images.pexels.com/photos/259447/pexels-photo-259447.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    highlights: ['Panorami sul mare da Punta Licosa', 'Il borgo in pietra di Nocelle', 'Terrazzamenti di limoni all’ombra'],
+    description:
+      'Un balcone sulla Costiera Amalfitana, tra terrazzamenti di limoni e cornici calcaree da Bomerano a Nocelle.',
+    image:
+      'https://images.pexels.com/photos/259447/pexels-photo-259447.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    highlights: [
+      'Panorami sulla Costiera Amalfitana',
+      'Borgo di Nocelle',
+      'Terrazzamenti di limoni'
+    ],
     coordinates: '40.6288° N, 14.5368° E',
+    weather: '22°C Sereno',
+    startPoint: 'Bomerano'
   },
+
   {
     id: 'tre-cime-loop',
     name: 'Anello delle Tre Cime',
@@ -45,11 +57,20 @@ export const trails: Trail[] = [
     difficulty: 'Moderate',
     rating: 4.8,
     reviewCount: 481,
-    description: 'Il classico anello attorno alle tre torri pallide di Lavaredo. Un’escursione d’alta quota su un sentiero intuitivo, con un orizzonte che si allarga a ogni passo.',
-    image: 'https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    highlights: ['Belvedere sulle Tre Cime', 'Rifugio Locatelli', 'Alba sulle pareti nord'],
+    description:
+      'Il classico anello attorno alle Tre Cime di Lavaredo con panorami spettacolari sulle Dolomiti.',
+    image:
+      'https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    highlights: [
+      'Tre Cime di Lavaredo',
+      'Rifugio Locatelli',
+      'Panorami dolomitici'
+    ],
     coordinates: '46.6188° N, 12.2953° E',
+    weather: '17°C Poco Nuvoloso',
+    startPoint: 'Rifugio Auronzo'
   },
+
   {
     id: 'monte-baldo-ridge',
     name: 'Cresta del Monte Baldo',
@@ -61,14 +82,23 @@ export const trails: Trail[] = [
     difficulty: 'Demanding',
     rating: 4.7,
     reviewCount: 196,
-    description: 'Una cresta lunga e ariosa sopra il Lago di Garda, dove d’estate i fiori selvatici invadono il sentiero. La funivia permette di adattare il percorso anche a una giornata più breve.',
-    image: 'https://images.pexels.com/photos/1576937/pexels-photo-1576937.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    highlights: ['Panorama sul Lago di Garda', 'Cappella del Monte Altissimo', 'Fiori alpini rari'],
+    description:
+      'Una lunga cresta panoramica sopra il Lago di Garda tra pascoli alpini e viste mozzafiato.',
+    image:
+      'https://images.pexels.com/photos/1576937/pexels-photo-1576937.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    highlights: [
+      'Vista sul Lago di Garda',
+      'Monte Altissimo',
+      'Flora alpina'
+    ],
     coordinates: '45.7534° N, 10.8463° E',
+    weather: '19°C Sereno',
+    startPoint: 'Stazione Funivia Malcesine'
   },
+
   {
     id: 'val-di-funes',
-    name: 'Sentiero dei prati della Val di Funes',
+    name: 'Val di Funes',
     region: 'Alto Adige',
     province: 'Bolzano',
     distanceKm: 6.4,
@@ -77,27 +107,45 @@ export const trails: Trail[] = [
     difficulty: 'Easy',
     rating: 4.8,
     reviewCount: 274,
-    description: 'Un anello dolce tra prati fioriti e boschi di larici, incorniciato dalle cime frastagliate delle Odle. Una prima passeggiata in montagna perfetta per tutta la famiglia.',
-    image: 'https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    highlights: ['Chiesa di Santa Maddalena', 'Le Odle sullo sfondo', 'Prati soleggiati per un picnic'],
+    description:
+      'Passeggiata semplice tra prati, boschi e viste spettacolari sulle Odle.',
+    image:
+      'https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    highlights: [
+      'Santa Maddalena',
+      'Odle',
+      'Prati alpini'
+    ],
     coordinates: '46.6412° N, 11.7191° E',
+    weather: '20°C Sereno',
+    startPoint: 'Santa Maddalena'
   },
+
   {
     id: 'gran-sasso-ascent',
     name: 'Salita al Gran Sasso',
     region: 'Abruzzo',
     province: "L'Aquila",
     distanceKm: 14.5,
-    elevationM: 1_120,
+    elevationM: 1120,
     duration: '6h 30m',
     difficulty: 'Demanding',
     rating: 4.6,
     reviewCount: 142,
-    description: 'Una giornata intera sul tetto degli Appennini. Attraversa l’altopiano aperto di Campo Imperatore fino a un ambiente d’alta quota silenzioso e a una vetta dal respiro continentale.',
-    image: 'https://images.pexels.com/photos/1365425/pexels-photo-1365425.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    highlights: ['Altopiano di Campo Imperatore', 'Panorami dalla vetta appenninica', 'Habitat del camoscio'],
+    description:
+      'Escursione impegnativa verso la vetta più alta degli Appennini.',
+    image:
+      'https://images.pexels.com/photos/1365425/pexels-photo-1365425.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    highlights: [
+      'Campo Imperatore',
+      'Vetta del Corno Grande',
+      'Fauna appenninica'
+    ],
     coordinates: '42.4731° N, 13.5589° E',
+    weather: '15°C Ventoso',
+    startPoint: 'Campo Imperatore'
   },
+
   {
     id: 'cinque-torri',
     name: 'Panorama delle Cinque Torri',
@@ -109,9 +157,43 @@ export const trails: Trail[] = [
     difficulty: 'Easy',
     rating: 4.9,
     reviewCount: 389,
-    description: 'Un anello luminoso ai piedi di torri rocciose scolpite, con postazioni dell’antico museo all’aperto della guerra e il profilo di Cortina all’orizzonte.',
-    image: 'https://images.pexels.com/photos/1624438/pexels-photo-1624438.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    highlights: ['Le guglie rocciose delle Cinque Torri', 'Museo all’aperto della Grande Guerra', 'Panorama su Cortina'],
+    description:
+      'Percorso ad anello tra le iconiche torri rocciose e i siti storici della Grande Guerra.',
+    image:
+      'https://images.pexels.com/photos/1624438/pexels-photo-1624438.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    highlights: [
+      'Cinque Torri',
+      'Museo della Grande Guerra',
+      'Vista su Cortina'
+    ],
     coordinates: '46.5159° N, 12.0590° E',
+    weather: '18°C Sereno',
+    startPoint: 'Rifugio Scoiattoli'
   },
+
+  {
+    id: 'monte-generoso',
+    name: 'Monte Generoso',
+    region: 'Lombardia',
+    province: 'Como',
+    distanceKm: 8.4,
+    elevationM: 580,
+    duration: '3h 20m',
+    difficulty: 'Moderate',
+    rating: 4.8,
+    reviewCount: 210,
+    description:
+      'Percorso panoramico tra Italia e Svizzera con viste sul Lago di Lugano, sul Lago di Como e sull’arco alpino.',
+    image:
+      'https://images.pexels.com/photos/1366909/pexels-photo-1366909.jpeg?auto=compress&cs=tinysrgb&w=1200',
+    highlights: [
+      'Vista sul Lago di Lugano',
+      'Panorama alpino',
+      'Belvedere Vetta Generoso',
+      'Confine Italia-Svizzera'
+    ],
+    coordinates: '45.9297° N, 9.0210° E',
+    weather: '18°C Sereno',
+    startPoint: 'Orimento'
+  }
 ];

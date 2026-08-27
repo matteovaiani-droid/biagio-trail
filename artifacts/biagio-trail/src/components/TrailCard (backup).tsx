@@ -1,4 +1,3 @@
-import { useLocation } from "wouter";
 import type { Trail } from "@/data/trails";
 
 type TrailCardProps = {
@@ -23,30 +22,20 @@ export function TrailCard({
   onToggleFavorite,
   unit,
 }: TrailCardProps) {
-  const [, navigate] = useLocation();
-
   const distance = distanceLabel(
     trail.distanceKm,
     unit
   );
-  
-  const image =
-    trail.image_url || trail.image;
+
   return (
     <div
-      onClick={() =>
-        navigate(`/trails/${trail.id}`)
-      }
       style={{
         border: "1px solid #d9d9d9",
         borderRadius: "12px",
         padding: "16px",
         marginBottom: "16px",
         backgroundColor: "#ffffff",
-        cursor: "pointer",
-        
       }}
-      
     >
       <h3>{trail.name}</h3>
 
@@ -61,13 +50,11 @@ export function TrailCard({
       <p>⏱️ {trail.duration}</p>
 
       <p>⭐ {trail.rating}</p>
-      
 
       <button
-        onClick={(event) => {
-          event.stopPropagation();
-          onToggleFavorite(trail.id);
-        }}
+        onClick={() =>
+          onToggleFavorite(trail.id)
+        }
       >
         {isFavorite
           ? "★ Preferito"

@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 
 import { TrailCard } from "@/components/TrailCard";
-import { getTrails } from "@/services/trailsService";
-import { type Difficulty } from "@/data/trails";
+import { trails, type Difficulty } from "@/data/trails";
 
 type TrailsPageProps = {
   favorites: string[];
@@ -34,31 +33,6 @@ export function TrailsPage({
   const [difficulty, setDifficulty] =
     useState<"All" | Difficulty>("All");
 
-  const [trails, setTrails] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getTrails()
-      .then((data: any) => {
-        const mapped =
-          (data ?? []).map((trail: any) => ({
-            ...trail,
-            distanceKm: trail.distance_km,
-            elevationM: trail.elevation_m,
-            reviewCount: trail.review_count,
-            startPoint: trail.start_point,
-          }));
-
-        setTrails(mapped);
-      })
-      .catch((error: any) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
   const filtered = useMemo(() => {
     return trails.filter((trail) => {
       const query = search.trim().toLowerCase();
@@ -75,11 +49,7 @@ export function TrailsPage({
           trail.difficulty === difficulty)
       );
     });
-  }, [trails, search, difficulty]);
-
-  if (loading) {
-    return <p>Caricamento sentieri...</p>;
-  }
+  }, [search, difficulty]);
 
   return (
     <div>
@@ -103,7 +73,7 @@ export function TrailsPage({
           <button
             key={filter}
             onClick={() =>
-              value={difficulty}
+              setDifficulty(filter)
             }
             style={{
               marginRight: "8px",
