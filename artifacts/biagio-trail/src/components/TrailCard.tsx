@@ -9,9 +9,13 @@ type TrailCardProps = {
 };
 
 export function distanceLabel(
-  distanceKm: number,
+  distanceKm: number | null | undefined,
   unit: "km" | "mi"
 ) {
+  if (distanceKm == null) {
+    return "N/D";
+  }
+
   return unit === "km"
     ? `${distanceKm.toFixed(1)} km`
     : `${(distanceKm * 0.621371).toFixed(1)} mi`;
@@ -29,9 +33,10 @@ export function TrailCard({
     trail.distanceKm,
     unit
   );
-  
+
   const image =
     trail.image_url || trail.image;
+
   return (
     <div
       onClick={() =>
@@ -44,24 +49,34 @@ export function TrailCard({
         marginBottom: "16px",
         backgroundColor: "#ffffff",
         cursor: "pointer",
-        
       }}
-      
     >
       <h3>{trail.name}</h3>
 
       <p>
-        {trail.region} - {trail.province}
+        {trail.region} -{" "}
+        {trail.province || "N/D"}
       </p>
 
       <p>📏 {distance}</p>
 
-      <p>⛰️ {trail.elevationM} m</p>
+      <p>
+        ⛰️{" "}
+        {trail.elevationM != null
+          ? `${trail.elevationM} m`
+          : "N/D"}
+      </p>
 
-      <p>⏱️ {trail.duration}</p>
+      <p>
+        ⏱️ {trail.duration || "N/D"}
+      </p>
 
-      <p>⭐ {trail.rating}</p>
-      
+      <p>
+        ⭐{" "}
+        {trail.rating != null
+          ? trail.rating
+          : "N/D"}
+      </p>
 
       <button
         onClick={(event) => {
