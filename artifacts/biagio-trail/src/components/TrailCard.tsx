@@ -20,7 +20,20 @@ export function distanceLabel(
     ? `${distanceKm.toFixed(1)} km`
     : `${(distanceKm * 0.621371).toFixed(1)} mi`;
 }
-
+function getDifficultyLabel(difficulty?: string) {
+  switch (difficulty) {
+    case "T":
+      return "Facile (T)";
+    case "E":
+      return "Moderato (E)";
+    case "EE":
+      return "Impegnativo (EE)";
+    case "EEA":
+      return "Molto impegnativo (EEA)";
+    default:
+      return difficulty ?? "N/D";
+  }
+}
 export function TrailCard({
   trail,
   isFavorite,
@@ -54,8 +67,7 @@ export function TrailCard({
       <h3>{trail.name}</h3>
 
       <p>
-        {trail.region} -{" "}
-        {trail.province || "N/D"}
+        📍 {trail.province || trail.region}
       </p>
 
       <p>📏 {distance}</p>
@@ -63,12 +75,16 @@ export function TrailCard({
       <p>
         ⛰️{" "}
         {trail.elevationM != null
-          ? `${trail.elevationM} m`
+          ? `${trail.elevationM} m D+`
           : "N/D"}
       </p>
 
       <p>
         ⏱️ {trail.duration || "N/D"}
+      </p>
+
+      <p>
+        🥾 {getDifficultyLabel(trail.difficulty)}
       </p>
 
       <p>

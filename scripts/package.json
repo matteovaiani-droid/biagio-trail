@@ -8,10 +8,13 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "import:lombardia": "tsx ./import-lombardia.ts",
     "sync:lombardia": "tsx ./sync-lombardia-trails.ts",
-    "update:provinces": "tsx ./update-provinces.ts"
+    "update:provinces": "tsx ./update-provinces.ts",
+    "enrich:trails": "tsx ./enrich-trails.ts",
+    "import:routes": "tsx ./import-routes.ts"
   },
   "dependencies": {
-    "dotenv": "^17.4.2"
+    "dotenv": "^17.4.2",
+    "fast-xml-parser": "^5.11.1"
   },
   "devDependencies": {
     "@types/node": "catalog:",

@@ -19,19 +19,22 @@ type TrailsPageProps = {
   unit: "km" | "mi";
 };
 
-const filters: Array<"All" | Difficulty> = [
+const filters = [
   "All",
-  "Easy",
-  "Moderate",
-  "Demanding",
-];
+  "T",
+  "E",
+  "EE",
+  "EEA",
+] as const;
 
-const filterLabels: Record<"All" | Difficulty, string> = {
+const filterLabels = {
   All: "Tutti",
-  Easy: "Facili",
-  Moderate: "Moderati",
-  Demanding: "Impegnativi",
+  T: "Facile (T)",
+  E: "Moderato (E)",
+  EE: "Impegnativo (EE)",
+  EEA: "Molto impegnativo (EEA)",
 };
+
 
 function FitBounds({ trails }: { trails: any[] }) {
   const map = useMap();
@@ -65,7 +68,16 @@ const greenIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
 });
-
+const yellowIcon = new L.Icon({
+  iconUrl:
+  "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+  shadowUrl: markerShadow,
+  iconRetinaUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
 const orangeIcon = new L.Icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
@@ -87,26 +99,49 @@ const redIcon = new L.Icon({
 });
 function getMarkerIcon(difficulty?: string) {
   switch (difficulty) {
-    case "Easy":
+    case "T":
       return greenIcon;
 
-    case "Moderate":
+    case "E":
+      return yellowIcon;
+
+    case "EE":
       return orangeIcon;
 
-    case "Demanding":
+    case "EEA":
       return redIcon;
 
     default:
       return greenIcon;
   }
 }
+
+function getDifficultyLabel(difficulty?: string) {
+  switch (difficulty) {
+    case "T":
+      return "Facile (T)";
+    case "E":
+      return "Moderato (E)";
+    case "EE":
+      return "Impegnativo (EE)";
+    case "EEA":
+      return "Molto impegnativo (EEA)";
+    default:
+      return difficulty ?? "N/D";
+  }
+}
+
 export function TrailsPage({
   favorites,
   onToggleFavorite,
   unit,
 }: TrailsPageProps) {
   const [search, setSearch] = useState("");
-  const [difficulty, setDifficulty] = useState<"All" | Difficulty>("All");
+
+  const [difficulty, setDifficulty] = useState<
+    "All" | "T" | "E" | "EE" | "EEA"
+  >("All");
+
   const [selectedTrail, setSelectedTrail] = useState<any | null>(null);
 
   const [trails, setTrails] = useState<any[]>([]);
@@ -256,42 +291,53 @@ export function TrailsPage({
       </div>
 
       <div
-        style={{
-          display: "flex",
-          gap: "12px",
-          marginBottom: "12px",
-        }}
-      >
-        <span
-          style={{
-            background: "#dbeafe",
-            padding: "6px 12px",
-            borderRadius: "999px",
-          }}
-        >
-          🔵 Facili
-        </span>
+  style={{
+    display: "flex",
+    gap: "12px",
+    marginBottom: "12px",
+    flexWrap: "wrap",
+  }}
+>
+  <span
+    style={{
+      background: "#dcfce7",
+      padding: "6px 12px",
+      borderRadius: "999px",
+    }}
+  >
+    🟢 Facile (T)
+  </span>
 
-        <span
-          style={{
-            background: "#fed7aa",
-            padding: "6px 12px",
-            borderRadius: "999px",
-          }}
-        >
-          🟠 Moderati
-        </span>
+  <span
+    style={{
+      background: "#fef3c7",
+      padding: "6px 12px",
+      borderRadius: "999px",
+    }}
+  >
+    🟡 Moderato (E)
+  </span>
 
-        <span
-          style={{
-            background: "#fecaca",
-            padding: "6px 12px",
-            borderRadius: "999px",
-          }}
-        >
-          🔴 Impegnativi
-        </span>
-      </div>
+  <span
+    style={{
+      background: "#fed7aa",
+      padding: "6px 12px",
+      borderRadius: "999px",
+    }}
+  >
+    🟠 Impegnativo (EE)
+  </span>
+
+  <span
+    style={{
+      background: "#fecaca",
+      padding: "6px 12px",
+      borderRadius: "999px",
+    }}
+  >
+    🔴 Molto impegnativo (EEA)
+  </span>
+</div>
 
       <div
         style={{
@@ -391,7 +437,7 @@ export function TrailsPage({
 
                     <p style={{ margin: "4px 0" }}>📍 {trail.province}</p>
 
-                    <p style={{ margin: "4px 0" }}>🥾 {trail.difficulty}</p>
+                    <p style={{ margin: "4px 0" }}>🥾 {getDifficultyLabel(trail.difficulty)}</p>
 
                     <p style={{ margin: "4px 0" }}>📏 {trail.distanceKm} km</p>
 
@@ -406,7 +452,7 @@ export function TrailsPage({
                         marginTop: "10px",
                       }}
                     >
-                      <Link to={`/trail/${trail.id}`}>
+                      <Link to={`/trails/${trail.id}`}>
                         Apri scheda sentiero →
                       </Link>
                     </div>
