@@ -5,6 +5,7 @@ import { TrailCard } from "@/components/TrailCard";
 import { getTrails } from "@/services/trailsService";
 import { type Difficulty } from "@/data/trails";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import { Link } from "wouter";
 import "leaflet/dist/leaflet.css";
 import { useMap } from "react-leaflet";
@@ -41,8 +42,11 @@ function FitBounds({ trails }: { trails: any[] }) {
 
   useEffect(() => {
     const points = trails
-      .filter((trail) => trail.latitude && trail.longitude)
-      .map((trail) => [Number(trail.latitude), Number(trail.longitude)]);
+    .filter((trail) => trail.endpoint_a_lat && trail.endpoint_a_lng)
+    .map((trail) => [
+      Number(trail.endpoint_a_lat),
+      Number(trail.endpoint_a_lng),
+    ]);
 
     if (points.length === 0) {
       return;
@@ -64,8 +68,8 @@ const greenIcon = new L.Icon({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
   iconRetinaUrl: markerIcon2x,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconSize: [18, 30],
+  iconAnchor: [9, 30],
   popupAnchor: [1, -34],
 });
 const yellowIcon = new L.Icon({
@@ -74,8 +78,8 @@ const yellowIcon = new L.Icon({
   shadowUrl: markerShadow,
   iconRetinaUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconSize: [18, 30],
+  iconAnchor: [9, 30],
   popupAnchor: [1, -34],
 });
 const orangeIcon = new L.Icon({
@@ -84,8 +88,9 @@ const orangeIcon = new L.Icon({
   shadowUrl: markerShadow,
   iconRetinaUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+   iconSize: [18, 30],
+    iconAnchor: [9, 30],
+    popupAnchor: [1, -34],
 });
 
 const redIcon = new L.Icon({
@@ -148,8 +153,9 @@ export function TrailsPage({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getTrails()
+      getTrails()
       .then((data: any) => {
+
         const mapped = (data ?? []).map((trail: any) => ({
           ...trail,
           distanceKm: trail.distance_km,
@@ -160,6 +166,7 @@ export function TrailsPage({
 
         setTrails(mapped);
       })
+        
       .catch((error: any) => {
         console.error(error);
       })
@@ -168,6 +175,22 @@ export function TrailsPage({
       });
   }, []);
 
+  useEffect(() => {
+  if (!loading) {
+    const savedScroll =
+      sessionStorage.getItem("trailsScrollY");
+
+    if (savedScroll) {
+      setTimeout(() => {
+        window.scrollTo(
+          0,
+          Number(savedScroll)
+        );
+      }, 500);
+    }
+  }
+}, [loading]);
+  
   const filtered = useMemo(() => {
     return trails.filter((trail) => {
       const query = search.trim().toLowerCase();
@@ -410,14 +433,27 @@ export function TrailsPage({
           <FitBounds trails={filtered} />
 
           {filtered.map((trail) => {
-            if (!trail.latitude || !trail.longitude) {
-              return null;
-            }
+          if (
+            !trail.endpoint_a_lat &&
+            !trail.latitude
+          ) {
+            return null;
+          }
 
             return (
               <Marker
                 key={trail.id}
-                position={[Number(trail.latitude), Number(trail.longitude)]}
+                position={[
+                  Number(
+                    trail.endpoint_a_lat ??
+                      trail.latitude
+                  ),
+                  Number(
+                    trail.endpoint_a_lng ??
+                      trail.longitude
+                  ),
+                ]}
+                
                 icon={getMarkerIcon(trail.difficulty)}
               >
                 <Popup>
@@ -452,7 +488,15 @@ export function TrailsPage({
                         marginTop: "10px",
                       }}
                     >
-                      <Link to={`/trails/${trail.id}`}>
+                      <Link
+                        to={`/trails/${trail.id}`}
+                        onClick={() => {
+                          sessionStorage.setItem(
+                            "trailsScrollY",
+                            String(window.scrollY)
+                          );
+                        }}
+                      >
                         Apri scheda sentiero →
                       </Link>
                     </div>

@@ -27,6 +27,10 @@ export function SupabaseTest() {
       )}
 
       <p>
+        URL: {import.meta.env.VITE_SUPABASE_URL}
+      </p>
+
+      <p>
         Sentieri trovati: {trails.length}
       </p>
 

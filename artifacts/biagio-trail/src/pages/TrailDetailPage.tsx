@@ -118,11 +118,84 @@ export function TrailDetailPage({
         padding: "20px",
       }}
     >
-      <h1>{trail.name}</h1>
+      
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "180px 1fr 320px",
+          alignItems: "center",
+          marginBottom: "40px",
+          gap: "20px",
+        }}
+      >
+        <div>
+          <button
+            onClick={() => window.history.back()}
+            style={{
+              padding: "10px 16px",
+              borderRadius: "8px",
+              border: "1px solid #d1d5db",
+              background: "#ffffff",
+              cursor: "pointer",
+              fontWeight: 600,
+            }}
+          >
+            Torna indietro
+          </button>
+        </div>
 
-      <p>
-        {trail.region} - {trail.province}
-      </p>
+           <div>
+             <h1
+               style={{
+                 margin: 0,
+                 textAlign: "center",
+                 color: "#0f2d5c",
+                 fontSize: "2.8rem",
+                 fontWeight: 800,
+               }}
+             >
+               {trail.name}
+             </h1>
+
+             <p
+               style={{
+                 textAlign: "center",
+                 marginTop: "8px",
+               }}
+             >
+               {trail.region} - {trail.province}
+             </p>
+             </div>
+            
+             </div>
+
+             <div
+               style={{
+                 textAlign: "right",
+                 fontSize: "20px",
+                 fontWeight: 600,
+                 lineHeight: 1.8,
+               }}
+             >
+           
+  {weather?.current && (
+    <>
+      <div>
+        {getWeatherDescription(
+          weather.current.weather_code
+        )}
+      </div>
+
+      <div>
+        🌡️ {weather.current.temperature_2m}°C
+      </div>
+
+      <div>
+        💨 {weather.current.wind_speed_10m} km/h
+      </div>
+    </>
+  )}
+</div>
 
       <hr />
 
@@ -172,25 +245,6 @@ export function TrailDetailPage({
         </p>
       )}
 
-      {weather?.current && (
-        <div>
-          <p>
-            {getWeatherDescription(
-              weather.current.weather_code
-            )}
-          </p>
-
-          <p>
-            🌡️ Temperatura:{" "}
-            {weather.current.temperature_2m}°C
-          </p>
-
-          <p>
-            💨 Vento:{" "}
-            {weather.current.wind_speed_10m} km/h
-          </p>
-        </div>
-      )}
 
       {trail.startPoint && (
         <p>
