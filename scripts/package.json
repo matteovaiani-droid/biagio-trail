@@ -13,6 +13,7 @@
     "import:routes": "tsx ./import-routes.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.0.0",
     "dotenv": "^17.4.2",
     "fast-xml-parser": "^5.11.1"
   },
@@ -21,3 +22,4 @@
     "tsx": "catalog:"
   }
 }
+

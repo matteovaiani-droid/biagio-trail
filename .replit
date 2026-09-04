@@ -21,4 +21,7 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
-packages = ["z-lua", "pulumi-esc"]
+packages = ["z-lua", "pulumi-esc", "nano", "q-text-as-data", "u-root-cmds", "pws", "sqlite"]
+
+[[ports]]
+localPort = 21906

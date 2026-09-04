@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "wouter";
 
 import { distanceLabel } from "@/components/TrailCard";
-import { getTrails } from "@/services/trailsService";
+import { getTrails, getTrailById,} from "@/services/trailsService";
+import { getOrCreateGeometry } from "@/services/geometryService";
 import {  getWeather,  getWeatherDescription,} from "@/services/weatherService";
 import {  MapContainer,  TileLayer,  Marker,  Popup,} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -28,12 +29,8 @@ export function TrailDetailPage({
   const [weather, setWeather] =
     useState<any>(null);
 
-  useEffect(() => {
-    getTrails()
-      .then((data: any) => {
-        const found = (data ?? []).find(
-          (item: any) => item.id === params.id
-        );
+        getTrailById(params.id)
+        .then((found: any) => {
 
         if (!found) {
           setTrail(null);

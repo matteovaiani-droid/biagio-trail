@@ -12,10 +12,7 @@ import { HomePage } from "@/pages/HomePage";
 import { TrailsPage } from "@/pages/TrailsPage";
 import { TrailDetailPage } from "@/pages/TrailDetailPage";
 import { FavoritesPage } from "@/pages/FavoritesPage";
-import { SupabaseTest } from "@/pages/SupabaseTest";
 import { SettingsPage, type Settings } from "@/pages/SettingsPage";
-
-import { TrailsApiTest } from "@/pages/TrailsApiTest";
 
 import { Route, Switch, useLocation, Router as WouterRouter } from "wouter";
 
@@ -80,9 +77,6 @@ function Router() {
     <RoutedErrorBoundary>
       <AppShell>
         <Switch>
-          <Route path="/supabase-test">
-            <SupabaseTest />
-          </Route>
 
           <Route path="/">
             <HomePage {...shared} />
@@ -90,10 +84,6 @@ function Router() {
 
           <Route path="/trails">
             <TrailsPage {...shared} />
-          </Route>
-
-          <Route path="/api-test">
-            <TrailsApiTest />
           </Route>
 
           <Route path="/trails/:id">

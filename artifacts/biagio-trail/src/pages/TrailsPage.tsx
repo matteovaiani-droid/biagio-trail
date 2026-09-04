@@ -147,7 +147,10 @@ export function TrailsPage({
     "All" | "T" | "E" | "EE" | "EEA"
   >("All");
 
-  const [selectedTrail, setSelectedTrail] = useState<any | null>(null);
+  const [totalTrails, setTotalTrails] = useState(0);
+
+  const [totalProvinces, setTotalProvinces] =
+    useState(0);
 
   const [trails, setTrails] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -165,7 +168,17 @@ export function TrailsPage({
         }));
 
         setTrails(mapped);
+        setTotalTrails(data?.length ?? 0);
+
+        setTotalProvinces(
+          new Set(
+            (data ?? [])
+              .map((t: any) => t.province)
+              .filter(Boolean)
+          ).size
+        );
       })
+
         
       .catch((error: any) => {
         console.error(error);
@@ -265,7 +278,7 @@ export function TrailsPage({
               fontSize: "22px",
             }}
           >
-            {trails.length}
+            {totalTrails.toLocaleString("it-IT")}
           </div>
 
           <div
@@ -300,7 +313,7 @@ export function TrailsPage({
               fontSize: "22px",
             }}
           >
-            {new Set(trails.map((trail) => trail.province)).size}
+            {totalProvinces}
           </div>
 
           <div
